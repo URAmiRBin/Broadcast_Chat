@@ -22,8 +22,11 @@ def send_event(event = None):
 
 # Close Window Event
 def on_closing(event=None):
-    text_field.set("[!q]")
-    send()
+    message = "has left the chat"
+    connection.send(message.encode())
+    connection.close()
+    top.quit()
+    quit()
 
 
 # ======================= CLI FUNCTIONS =======================
@@ -157,12 +160,15 @@ def udp_listener_sender(addr):
 # ======================= MAIN =======================
 # Tkinker Initialaztion
 top = tkinter.Tk()
-top.title("Chatter")
+top.title("Chatbox")
+# Frame and field
 messages_frame = tkinter.Frame(top)
 text_field = tkinter.StringVar()
-text_field.set("Type your messages here.")
+text_field.set("Type here")
+# Scrollbar for more messages
 scrollbar = tkinter.Scrollbar(messages_frame)
-messages_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+# Chat windows
+messages_list = tkinter.Listbox(messages_frame, height=25, width=50, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 messages_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 messages_list.pack()
@@ -196,12 +202,9 @@ if action == "1":
     server_socket.listen(1)
     print("Waiting ...")
     connection, addr = server_socket.accept()
-    print("Found Connection, ", addr[0], "(", addr[1], ")\n")
-    print('Connection Established. Connected From: {}, ({})'.format(addr[0], addr[0]))
     # Gets name
     name2 = connection.recv(1024)
     name2 = name2.decode()
-    print(name2 + ' has connected.')
     connection.send(name.encode())
     
 elif action == "2":
@@ -219,11 +222,9 @@ elif action == "2":
     print("connecting to the server: {}, ({})".format(server_host, port))
     time.sleep(1)
     connection.connect((server_host, port))
-    print("Connected...")
     connection.send(name.encode())
     name2 = connection.recv(1024)
     name2 = name2.decode()
-    print('{} has joined...'.format(name2))
 recv_thread = Thread(target = recv)
 recv_thread.start()
 tkinter.mainloop()
