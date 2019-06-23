@@ -33,7 +33,8 @@ def menu(start):
     print("=================== MENU =================")
     print("1. Broadcast")
     print("2. Listen")
-    print("Press Numbers to start (1 or 2)")
+    print("3. Help")
+    print("Press Numbers to start (1 or 2 or 3)")
     action = input(" > ")
     if action == "1":
         get_port = udp_broadcaster_sender()
@@ -53,6 +54,12 @@ def menu(start):
             menu(False)
         else:
             return action, addr, my_port
+    else:
+        print("First Run the broadcast then listener")
+        print("WARNING: Broadcaster, broadcasts for about 4 seconds and if can't find someone crashes!!!!")
+        print("Type in [!q] in chat to disconnect")
+        input("Press Any key to go back to menu ")
+        menu(False)
 
 
 # ======================= NETWORK FUNCTIONS =======================
