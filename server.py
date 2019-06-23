@@ -16,7 +16,7 @@ def send_event(event=None):
         top.quit()
         return
     connection.send(bytes(text_field_output, "utf8"))
-    msg_list.insert(tkinter.END, (name, '>', text_field_output))
+    messages_list.insert(tkinter.END, (name, '>', text_field_output))
 
 
 # Close Window Event
@@ -60,8 +60,7 @@ def recv():
     while True:
         message = connection.recv(1024)
         message = message.decode()
-        message = message[1 : -1]
-        msg_list.insert(tkinter.END, (name2, '>', message))
+        messages_list.insert(tkinter.END, (name2, '>', message))
 
 
 # ======================= BROADCAST FUNCTIONS =======================
@@ -78,7 +77,7 @@ def udp_broadcaster_sender():
     while scounter < 7:
         scounter += 1
         server.sendto(message, ('<broadcast>', 33333))
-        time.sleep(1)
+        time.sleep(0.5)
     print("FINISHED BROADCASTING")
     # Listens on port 22221 to find target
     print("STARTIN LISTENING")
@@ -104,24 +103,21 @@ def udp_broadcaster_receiver():
     return False
     
 
-# ======================= BROADCAST FUNCTIONS =======================
+# ======================= LISTENER FUNCTIONS =======================
 def udp_listener_receiver():
     # Create a UDP socket on port 33333 to listen
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     client.bind(("", 33333))
-    rcounter = 0
     # Listens to find message "hello"
     try:
-        while rcounter < 7:
-            rcounter += 1
-            data, addr = client.recvfrom(1024)
-            if data == b'hello':
-                print("listener found someone")
-                # if found "hello", sends a port to target to connect
-                print(addr)
-                my_port = udp_listener_sender(addr)
-                return addr[0], my_port
+        data, addr = client.recvfrom(1024)
+        if data == b'hello':
+            print("listener found someone")
+            # if found "hello", sends a port to target to connect
+            print(addr)
+            my_port = udp_listener_sender(addr)
+            return addr[0], my_port
     except socket.error:
         print("SOCKET ERROR")
     return False
@@ -137,14 +133,13 @@ def udp_listener_sender(addr):
     message_str = str1 + str2
     print(message_str)
     server.bind(("", STATIC_PORT))
-    # message = b"im ready on port 1234"
     message = str.encode(message_str)
     scounter = 0
     try:
         while scounter < 7:
             scounter += 1
             server.sendto(message, (addr[0], int(addr[1]) - 1))
-            time.sleep(1)
+            time.sleep(0.7)
     except socket.error:
         print("SOCKET ERROR SENDING")
     return STATIC_PORT
@@ -158,10 +153,10 @@ messages_frame = tkinter.Frame(top)
 text_field = tkinter.StringVar()
 text_field.set("Type your messages here.")
 scrollbar = tkinter.Scrollbar(messages_frame)
-msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
+messages_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
-msg_list.pack()
+messages_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
+messages_list.pack()
 messages_frame.pack()
 entry_field = tkinter.Entry(top, textvariable=text_field)
 entry_field.bind("<Return>", send_event)
