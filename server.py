@@ -6,22 +6,22 @@ import random
 # ======================= TKINKER FUNCTIONS =======================
 # When send button pressed, sends the text in textbox
 # Event passed by binders
-def send(event=None):
-    msg = my_msg.get()
-    my_msg.set("")
-    if msg == "[!q]":
-        message = "<Leaving the Chat room>"
+def send_event(event=None):
+    text_field_output = text_field.get()
+    text_field.set("Type here")
+    if text_field_output == "[!q]":
+        message = "has left the chat"
         connection.send(message.encode())
         connection.close()
         top.quit()
         return
-    connection.send(bytes(msg, "utf8"))
-    msg_list.insert(tkinter.END, (name, '>', msg))
+    connection.send(bytes(text_field_output, "utf8"))
+    msg_list.insert(tkinter.END, (name, '>', text_field_output))
 
 
 # Close Window Event
 def on_closing(event=None):
-    my_msg.set("[!q]")
+    text_field.set("[!q]")
     send()
 
 
@@ -60,6 +60,7 @@ def recv():
     while True:
         message = connection.recv(1024)
         message = message.decode()
+        message = message[1 : -1]
         msg_list.insert(tkinter.END, (name2, '>', message))
 
 
@@ -154,18 +155,18 @@ def udp_listener_sender(addr):
 top = tkinter.Tk()
 top.title("Chatter")
 messages_frame = tkinter.Frame(top)
-my_msg = tkinter.StringVar()
-my_msg.set("Type your messages here.")
+text_field = tkinter.StringVar()
+text_field.set("Type your messages here.")
 scrollbar = tkinter.Scrollbar(messages_frame)
 msg_list = tkinter.Listbox(messages_frame, height=15, width=50, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 msg_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 msg_list.pack()
 messages_frame.pack()
-entry_field = tkinter.Entry(top, textvariable=my_msg)
-entry_field.bind("<Return>", send)
+entry_field = tkinter.Entry(top, textvariable=text_field)
+entry_field.bind("<Return>", send_event)
 entry_field.pack()
-send_button = tkinter.Button(top, text="Send", command=send)
+send_button = tkinter.Button(top, text="Send", command=send_event)
 send_button.pack()
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
