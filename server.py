@@ -175,50 +175,48 @@ action, menu_out, my_port = menu(True)
 
 # Menu actions
 if action == "1": 
-    print('Setup Server...')
+    print("SERVER INIT")
     time.sleep(1)
-    #Get Server Information
-    soc = socket.socket()
+    # Gets Server IP and Port and binds
+    server_socket = socket.socket()
     host_name = socket.gethostname()
     ip = socket.gethostbyname(host_name)
     port = menu_out
-    soc.bind((host_name, port))
+    server_socket.bind((host_name, port))
     print(host_name, '({})'.format(ip))
-    name = input('Enter name: ')
-    soc.listen(1)
-    print('Waiting for incoming connections...')
-    connection, addr = soc.accept()
-    print("Received connection from ", addr[0], "(", addr[1], ")\n")
+    name = input("What's your name: ")
+    # Waits on given port for someone to connect
+    server_socket.listen(1)
+    print("Waiting ...")
+    connection, addr = server_socket.accept()
+    print("Found Connection, ", addr[0], "(", addr[1], ")\n")
     print('Connection Established. Connected From: {}, ({})'.format(addr[0], addr[0]))
-    #get a connection from client side
+    # Gets name
     name2 = connection.recv(1024)
     name2 = name2.decode()
     print(name2 + ' has connected.')
-    print('Press [!q] to leave the chat room')
     connection.send(name.encode())
     
 elif action == "2":
-    print('Client Server...')
+    print("CLIENT INIT")
     time.sleep(1)
-    #Get the hostname, IP Address from socket and set Port
+    # Gets Client IP and Port and connects
     connection = socket.socket()
     shost = socket.gethostname()
     ip = socket.gethostbyname(shost)
-    #get information to connect with the server
+    # Gets server information
     print(shost, '({})'.format(ip))
-    # server_host = input('Enter server\'s IP address:')
     server_host = menu_out
-    name = input('Enter Client\'s name: ')
+    name = input("What's your name: ")
     port = my_port
-    print('Trying to connect to the server: {}, ({})'.format(server_host, port))
+    print("connecting to the server: {}, ({})".format(server_host, port))
     time.sleep(1)
     connection.connect((server_host, port))
-    print("Connected...\n")
+    print("Connected...")
     connection.send(name.encode())
     name2 = connection.recv(1024)
     name2 = name2.decode()
     print('{} has joined...'.format(name2))
-    print('Enter [!q] to exit.')
 recv_thread = Thread(target = recv)
 recv_thread.start()
 tkinter.mainloop()
