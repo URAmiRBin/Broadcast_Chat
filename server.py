@@ -6,7 +6,7 @@ import random
 # ======================= TKINKER FUNCTIONS =======================
 # When send button pressed, sends the text in textbox
 # Event passed by binders
-def send_event(event=None):
+def send_event(event = None):
     text_field_output = text_field.get()
     text_field.set("Type here")
     if text_field_output == "[!q]":
@@ -16,7 +16,8 @@ def send_event(event=None):
         top.quit()
         return
     connection.send(bytes(text_field_output, "utf8"))
-    messages_list.insert(tkinter.END, (name, '>', text_field_output))
+    message3 = "{} > {}".format(name, text_field_output)
+    messages_list.insert(tkinter.END, message3)
 
 
 # Close Window Event
@@ -60,7 +61,8 @@ def recv():
     while True:
         message = connection.recv(1024)
         message = message.decode()
-        messages_list.insert(tkinter.END, (name2, '>', message))
+        message2 = "{} > {}".format(name2, message) 
+        messages_list.insert(tkinter.END, message2)
 
 
 # ======================= BROADCAST FUNCTIONS =======================
