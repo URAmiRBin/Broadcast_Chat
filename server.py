@@ -8,7 +8,7 @@ import random
 # Event passed by binders
 def send_event(event = None):
     text_field_output = text_field.get()
-    text_field.set("Type here")
+    text_field.set("")
     if text_field_output == "[!q]":
         message = "has left the chat"
         connection.send(message.encode())
@@ -81,31 +81,31 @@ def recv():
 
 # ======================= BROADCAST FUNCTIONS =======================
 def udp_broadcaster_sender():
-    # Creates a UDP socket on port 22222
+    # Creates a UDP socket on port 2222
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     server.settimeout(0.2)
-    server.bind(("", 22222))
+    server.bind(("", PORT1))
     message = b"hello"
     scounter = 0
-    # broadcasts datagram message hello on port 33333
+    # broadcasts datagram message hello on port 3333
     print("BROADCASTING ...")
     while scounter < 7:
         scounter += 1
-        server.sendto(message, ('<broadcast>', 33333))
+        server.sendto(message, ('<broadcast>', PORT2))
         time.sleep(0.5)
     print("FINISHED BROADCASTING")
-    # Listens on port 22221 to find target
+    # Listens on port 2221 to find target
     print("STARTIN LISTENING")
     port = udp_broadcaster_receiver()
     return port
 
 
 def udp_broadcaster_receiver():
-    # Creates a UDP Socket on port 22221 to listen
+    # Creates a UDP Socket on port 2221 to listen
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    client.bind(("", 22221))
+    client.bind(("", int(PORT2 - 1)))
     # Gets target data and address
     data, addr = client.recvfrom(1024)
     # Listens to find message "im ready on port"
@@ -124,7 +124,7 @@ def udp_listener_receiver():
     # Create a UDP socket on port 33333 to listen
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    client.bind(("", 33333))
+    client.bind(("", PORT2))
     # Listens to find message "hello"
     try:
         data, addr = client.recvfrom(1024)
@@ -154,7 +154,7 @@ def udp_listener_sender(addr):
     try:
         while scounter < 7:
             scounter += 1
-            server.sendto(message, (addr[0], int(addr[1]) - 1))
+            server.sendto(message, (addr[0], int(PORT2 - 1)))
             time.sleep(0.7)
     except socket.error:
         print("SOCKET ERROR SENDING")
@@ -168,7 +168,7 @@ top.title("Chatbox")
 # Frame and field
 messages_frame = tkinter.Frame(top)
 text_field = tkinter.StringVar()
-text_field.set("Type here")
+text_field.set("")
 # Scrollbar for more messages
 scrollbar = tkinter.Scrollbar(messages_frame)
 # Chat windows
@@ -184,7 +184,9 @@ send_button = tkinter.Button(top, text="Send", command=send_event)
 send_button.pack()
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
-
+# Static Variables
+PORT1 = 2222
+PORT2 = 3333
 # Menu inputs
 action = ""
 action, menu_out, my_port = menu(True)
