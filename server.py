@@ -12,11 +12,11 @@ def send_event(event = None):
     if text_field_output == "[!q]":
         message = "has left the chat"
         connection.send(message.encode())
-        connection.close()
+        # connection.close()
         top.quit()
         return
     connection.send(bytes(text_field_output, "utf8"))
-    message3 = "{} > {}".format(name, text_field_output)
+    message3 = "You > {}".format(text_field_output)
     messages_list.insert(tkinter.END, message3)
 
 
@@ -24,10 +24,9 @@ def send_event(event = None):
 def on_closing(event=None):
     message = "has left the chat"
     connection.send(message.encode())
-    connection.close()
+    # connection.close()
     top.quit()
-    quit()
-
+    sys.exit(0)
 
 # ======================= CLI FUNCTIONS =======================
 def menu(start):
@@ -73,6 +72,10 @@ def recv():
         message = connection.recv(1024)
         message = message.decode()
         message2 = "{} > {}".format(name2, message) 
+        if "has left" in message2:
+            connection.close()
+            top.quit()
+            sys.exit(0)
         messages_list.insert(tkinter.END, message2)
 
 
