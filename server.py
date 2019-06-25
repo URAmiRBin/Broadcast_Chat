@@ -30,6 +30,7 @@ def on_closing(event=None):
 
 # ======================= CLI FUNCTIONS =======================
 def menu(start):
+    global action
     if start:
         print("Hello and welcome to Chatbox, Developed by @Amir_Bin")
     print("=================== MENU =================")
@@ -37,7 +38,7 @@ def menu(start):
     print("2. Listen")
     print("3. Help")
     print("Press Numbers to start (1 or 2 or 3)")
-    action = input(" > ")
+    # action = input(" > ")
     if action == "1":
         get_port = udp_broadcaster_sender()
         if get_port is False:
@@ -46,7 +47,7 @@ def menu(start):
             sleep(1)
             menu(False)
         else:
-            return action, get_port, 0
+            return get_port, 0
     elif action == "2":
         addr, my_port = udp_listener_receiver()
         if addr is False:
@@ -55,7 +56,7 @@ def menu(start):
             sleep(1)
             menu(False)
         else:
-            return action, addr, my_port
+            return addr, my_port
     else:
         print("First Run the broadcast then listener")
         print("WARNING: Broadcaster, broadcasts for about 4 seconds and if can't find someone crashes!!!!")
@@ -188,8 +189,9 @@ top.protocol("WM_DELETE_WINDOW", on_closing)
 PORT1 = 2222
 PORT2 = 3333
 # Menu inputs
-action = ""
-action, menu_out, my_port = menu(True)
+action = sys.argv[1]
+name = sys.argv[2]
+menu_out, my_port = menu(True)
 
 
 # Menu actions
@@ -203,7 +205,7 @@ if action == "1":
     port = menu_out
     server_socket.bind((host_name, port))
     print(host_name, '({})'.format(ip))
-    name = input("What's your name: ")
+    # name = input("What's your name: ")
     # Waits on given port for someone to connect
     server_socket.listen(1)
     print("Waiting ...")
@@ -223,7 +225,7 @@ elif action == "2":
     # Gets server information
     print(shost, '({})'.format(ip))
     server_host = menu_out
-    name = input("What's your name: ")
+    # name = input("What's your name: ")
     port = my_port
     print("connecting to the server: {}, ({})".format(server_host, port))
     time.sleep(1)
