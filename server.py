@@ -3,22 +3,22 @@ from threading import Thread
 import tkinter
 import random
 
-# t = "shit fuck"
-def censort(t,l):
-    senwords = t.split()
-    words = l.split()                       #split the words into a list
+senwords = ["shit", "fuck", "nigga", "anus"]
+def censort(l):
+    global senwords
+    words = l.split(' ')                       #split the words into a list
     for i in range(len(words)):
         for j in range(len(senwords)):             #for each word in the text
-            if senwords[i] in words[j]:                       #if it needs to be censoredx
-                words[j] = "*"*len(senwords[i])            #replace it with X's
-    l=words.join()
-    return l     
+            if senwords[j] in words[i]:                       #if it needs to be censoredx
+                words[i] = "*"*len(senwords[j])            #replace it with X's
+    x=" ".join(words)
+    return x     
 # ======================= TKINKER FUNCTIONS =======================
 # When send button pressed, sends the text in textbox
 # Event passed by binders
 def send_event(event = None):
     text_field_output = text_field.get()
-    text_field_output = censort("shit fuck", text_field_output)
+    text_field_output = censort(text_field_output)
     text_field.set("")
     if text_field_output == "[!q]":
         message = "has left the chat"

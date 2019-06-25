@@ -2,6 +2,7 @@ Run Tkinker.py for both client and server
 I used Tkinter to implement GUI
 Main Network code is in server.py
 This is an anynomous chat, so there's only two people to chat with each other
+This Chat application censors curse words`
 PROTOCOL:
 1. Run Broadcaster FIRST
 2. Broadcaster Broadcasts for 4 seconds then listens for 5 seconds
