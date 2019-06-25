@@ -163,6 +163,8 @@ def udp_listener_sender(addr):
 # Tkinker Initialaztion
 top = tkinter.Tk()
 top.title("Chatbox")
+top.option_add('*font', ('IRANSansWeb', 12))
+top.geometry("320x480")
 # Frame and field
 messages_frame = tkinter.Frame(top)
 text_field = tkinter.StringVar()
@@ -170,16 +172,16 @@ text_field.set("")
 # Scrollbar for more messages
 scrollbar = tkinter.Scrollbar(messages_frame)
 # Chat windows
-messages_list = tkinter.Listbox(messages_frame, height=25, width=50, yscrollcommand=scrollbar.set)
+messages_list = tkinter.Listbox(messages_frame, height=15, width=30, yscrollcommand=scrollbar.set)
 scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 messages_list.pack(side=tkinter.LEFT, fill=tkinter.BOTH)
 messages_list.pack()
 messages_frame.pack()
 entry_field = tkinter.Entry(top, textvariable=text_field)
 entry_field.bind("<Return>", send_event)
-entry_field.pack()
+entry_field.pack(side=tkinter.LEFT, expand = tkinter.YES)
 send_button = tkinter.Button(top, text="Send", command=send_event)
-send_button.pack()
+send_button.pack(side=tkinter.RIGHT)
 top.protocol("WM_DELETE_WINDOW", on_closing)
 
 # Static Variables
