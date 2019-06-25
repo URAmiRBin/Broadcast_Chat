@@ -59,10 +59,7 @@ class help_menu:
         self.fm.pack(fill=BOTH, expand=YES)
 
     def close_windows(self):
-        # self.master.destroy()
-        self.fm.destroy()
-        fm2 = Frame(self.master)
-        Button(fm2, text='Back', command = self.close_windows).pack(side=TOP, expand=YES)
+        self.master.destroy()
         
 
 
@@ -73,7 +70,6 @@ def main():
     app = Demo1(root)
     root.mainloop()
     myaction, myname = app.get()
-    print(myname, myaction)
     address = "python server.py "
     command = address + myaction + " " + myname
     os.system(command)

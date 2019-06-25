@@ -30,15 +30,6 @@ def on_closing(event=None):
 
 # ======================= CLI FUNCTIONS =======================
 def menu(start):
-    global action
-    if start:
-        print("Hello and welcome to Chatbox, Developed by @Amir_Bin")
-    print("=================== MENU =================")
-    print("1. Broadcast")
-    print("2. Listen")
-    print("3. Help")
-    print("Press Numbers to start (1 or 2 or 3)")
-    # action = input(" > ")
     if action == "1":
         get_port = udp_broadcaster_sender()
         if get_port is False:
@@ -57,13 +48,6 @@ def menu(start):
             menu(False)
         else:
             return addr, my_port
-    else:
-        print("First Run the broadcast then listener")
-        print("WARNING: Broadcaster, broadcasts for about 4 seconds and if can't find someone crashes!!!!")
-        print("Type in [!q] in chat to disconnect")
-
-        input("Press Any key to go back to menu ")
-        menu(False)
 
 
 # ======================= NETWORK FUNCTIONS =======================
@@ -106,7 +90,7 @@ def udp_broadcaster_receiver():
     # Creates a UDP Socket on port 2221 to listen
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    client.bind(("", int(PORT2 - 1)))
+    client.bind(("", PORT3))
     # Gets target data and address
     data, addr = client.recvfrom(1024)
     # Listens to find message "im ready on port"
@@ -155,7 +139,7 @@ def udp_listener_sender(addr):
     try:
         while scounter < 7:
             scounter += 1
-            server.sendto(message, (addr[0], int(PORT2 - 1)))
+            server.sendto(message, (addr[0], PORT3))
             time.sleep(0.7)
     except socket.error:
         print("SOCKET ERROR SENDING")
@@ -188,6 +172,7 @@ top.protocol("WM_DELETE_WINDOW", on_closing)
 # Static Variables
 PORT1 = 2222
 PORT2 = 3333
+PORT3 = 4444
 # Menu inputs
 action = sys.argv[1]
 name = sys.argv[2]
@@ -205,7 +190,6 @@ if action == "1":
     port = menu_out
     server_socket.bind((host_name, port))
     print(host_name, '({})'.format(ip))
-    # name = input("What's your name: ")
     # Waits on given port for someone to connect
     server_socket.listen(1)
     print("Waiting ...")
@@ -225,7 +209,6 @@ elif action == "2":
     # Gets server information
     print(shost, '({})'.format(ip))
     server_host = menu_out
-    # name = input("What's your name: ")
     port = my_port
     print("connecting to the server: {}, ({})".format(server_host, port))
     time.sleep(1)
